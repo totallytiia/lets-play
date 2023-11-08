@@ -1,0 +1,17 @@
+{
+    "name": "Joe",
+    "email": "test@example.com",
+    "password": "test",
+    "role": "admin"
+}
+
+get
+post
+put
+patch
+delete
+
+mongodb+srv://tiia:<tiia1234>@letsplay.liomgiy.mongodb.net/?retryWrites=true&w=majority
+
+
+GET http://localhost:8080/api/products/all
