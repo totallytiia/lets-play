@@ -1,5 +1,9 @@
 package com.userproductmanagement.letsplay.model;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,8 +11,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class User {
     @Id
     private String id;
+    @NotNull(message = "Name can't be null")
+    @Size(min = 2, message = "Name should have at least 2 characters")
     private String name;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     private String email;
+    @Size(min = 4, max = 20, message = "Password must be between 4-20 characters")
     private String password;
     private String role;
 
@@ -30,8 +39,8 @@ public class User {
         return password;
     }
 
-    public String getRole() {
-        return role;
+    public UserRole getRole() {
+        return UserRole.fromString(role);
     }
 
     public void setId(String id) {
@@ -50,7 +59,7 @@ public class User {
         this.password = password;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRole(UserRole role) {
+        this.role = role.getRole();
     }
 }

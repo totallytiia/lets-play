@@ -1,6 +1,6 @@
 package com.userproductmanagement.letsplay.service.impl;
 
-import com.userproductmanagement.letsplay.exceptions.EntityNotFoundException;
+import com.userproductmanagement.letsplay.exception.EntityNotFoundException;
 import com.userproductmanagement.letsplay.model.Product;
 import com.userproductmanagement.letsplay.repository.ProductRepository;
 import com.userproductmanagement.letsplay.service.ProductService;
