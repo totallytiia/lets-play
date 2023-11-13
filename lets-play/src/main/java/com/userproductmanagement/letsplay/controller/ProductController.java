@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
 
@@ -18,7 +18,7 @@ public class ProductController {
     }
     //check if person is authorized
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Product>> getProducts() {
         List<Product> products = productService.getProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
