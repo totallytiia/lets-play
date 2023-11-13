@@ -5,14 +5,14 @@ import com.userproductmanagement.letsplay.model.User;
 import java.util.List;
 
 public interface UserService {
-    public List<User> getUsers();
+    List<User> getUsers();
 
-    public User getUser(String id);
+    User getUser(String id);
 
-    public User addUser(User user);
+    User addUser(User user);
 
-    public User deleteUser(String id);
+    User deleteUser(String id);
 
-    public User updateUser(User user, String id);
+    User updateUser(User user, String id);
 
 }

@@ -4,7 +4,6 @@ import com.userproductmanagement.letsplay.exceptions.EntityNotFoundException;
 import com.userproductmanagement.letsplay.model.Product;
 import com.userproductmanagement.letsplay.repository.ProductRepository;
 import com.userproductmanagement.letsplay.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,8 +11,11 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public List<Product> getProducts() {
