@@ -4,6 +4,7 @@ import com.userproductmanagement.letsplay.exception.EntityNotFoundException;
 import com.userproductmanagement.letsplay.model.Product;
 import com.userproductmanagement.letsplay.repository.ProductRepository;
 import com.userproductmanagement.letsplay.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,11 +12,8 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository productRepository;
-
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public List<Product> getProducts() {
@@ -34,26 +32,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product deleteProduct(String id) {
+    public Boolean deleteProduct(String id) {
         return productRepository.findById(id)
                 .map(product -> {
                     productRepository.deleteById(id);
-                    return product;
+                    return true;
                 })
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+                .orElse(false);
     }
 
-    // check if null
 
-    public Product updateProduct(String id, Product productDetails) {
+    public Boolean updateProduct(String id, Product productDetails) {
         return productRepository.findById(id)
                 .map(existingProduct -> {
                     existingProduct.setName(productDetails.getName());
                     existingProduct.setDescription(productDetails.getDescription());
                     existingProduct.setPrice(productDetails.getPrice());
-                    // Add any other fields that need to be updated here
-                    return productRepository.save(existingProduct);
+                    productRepository.save(existingProduct);
+                    return true;
                 })
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+                .orElse(false);
     }
 }

@@ -4,62 +4,61 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-@Document
-public class User {
+import java.util.Collection;
+import java.util.List;
+
+
+@Data
+@Builder
+@Document(collection = "users")
+public class User implements UserDetails {
+
     @Id
     private String id;
-    @NotNull(message = "Name can't be null")
-    @Size(min = 2, message = "Name should have at least 2 characters")
+    @NotNull(message = "User's name can't be null")
+    @Size(min = 2, message = "User's name should have at least 2 characters")
     private String name;
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
-    @Size(min = 4, max = 20, message = "Password must be between 4-20 characters")
     private String password;
-    private String role;
+    private Role role;
 
 
-
-    public String getId() {
-        return id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority((role.name())));
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
+    @Override
+    public String getUsername() {
         return email;
     }
 
-    public String getPassword() {
-        return password;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public UserRole getRole() {
-        return UserRole.fromString(role);
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role.getRole();
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
