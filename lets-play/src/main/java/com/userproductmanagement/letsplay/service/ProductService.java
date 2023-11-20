@@ -1,6 +1,7 @@
 package com.userproductmanagement.letsplay.service;
 
 import com.userproductmanagement.letsplay.model.Product;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface ProductService {
 
     Product getProduct(String id);
 
-    Product addProduct(Product product);
+    Product addProduct(UserDetails userDetails, Product product);
 
     Boolean deleteProduct(String id);
 

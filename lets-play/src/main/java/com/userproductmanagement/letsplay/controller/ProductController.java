@@ -2,10 +2,12 @@ package com.userproductmanagement.letsplay.controller;
 
 import com.userproductmanagement.letsplay.model.Product;
 import com.userproductmanagement.letsplay.service.ProductService;
-import com.userproductmanagement.letsplay.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<List<Product>> getProducts() {
         List<Product> products = productService.getProducts();
         return new ResponseEntity<>(products, HttpStatus.OK);
@@ -33,14 +35,14 @@ public class ProductController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Product> insertProduct(@RequestBody Product product) {
-        Product createdProduct = productService.addProduct(product);
+    @PostMapping("/add")
+    public ResponseEntity<Product> insertProduct(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Product product) {
+        Product createdProduct = productService.addProduct(userDetails, product);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable String id, @RequestBody Product product) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateProduct(@Validated @PathVariable String id, @RequestBody Product product) {
         Boolean updatedProduct = productService.updateProduct(id, product);
         if (updatedProduct) {
             return new ResponseEntity<>("Product was updated successfully", HttpStatus.OK);
@@ -49,7 +51,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable String id) {
         Boolean product = productService.deleteProduct(id);
         if (product) {

@@ -2,18 +2,28 @@ package com.userproductmanagement.letsplay.service.impl;
 
 import com.userproductmanagement.letsplay.exception.EntityNotFoundException;
 import com.userproductmanagement.letsplay.model.Product;
+import com.userproductmanagement.letsplay.model.User;
 import com.userproductmanagement.letsplay.repository.ProductRepository;
+import com.userproductmanagement.letsplay.repository.UserRepository;
 import com.userproductmanagement.letsplay.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Product> getProducts() {
@@ -27,7 +37,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addProduct(Product product) {
+    public Product addProduct(UserDetails userDetails, Product product) {
+
+        if ( userDetails == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Authenticated user not found in database."));
+        product.setUserId(user.getId());
+
         return productRepository.save(product);
     }
 

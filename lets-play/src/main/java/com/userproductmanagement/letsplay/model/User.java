@@ -24,9 +24,16 @@ public class User implements UserDetails {
 
     @Id
     private String id;
+    @NotNull(message = "User's name can't be null")
+    @NotBlank(message = "User's name can't be blank")
+    @Size(min = 2, message = "User's name should have at least 2 characters")
     private String name;
+    @NotNull(message = "Email can't be null")
+    @NotBlank(message = "Email can't be blank")
+    @Email(message = "Email needs to be valid")
     @Indexed(unique = true)
     private String email;
+    @NotNull(message = "Password can't be null")
     private String password;
     private Role role;
 

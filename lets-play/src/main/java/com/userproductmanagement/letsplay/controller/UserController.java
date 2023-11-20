@@ -19,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     // Get a list of all users
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
@@ -30,13 +30,6 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable String id) {
         User user = userService.getUser(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    // Create a new user
-    @PostMapping("/")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        User newUser = userService.addUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     // Update an existing user
