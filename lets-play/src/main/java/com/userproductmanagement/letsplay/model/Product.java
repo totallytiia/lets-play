@@ -21,7 +21,7 @@ public class Product {
     private String description;
 
     @NotNull(message = "Product's price can't be null")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Price must be 0.0 or more")
+    @DecimalMin(value = "0.0", message = "Price must be 0.0 or more")
     private Double price;
 
     @NotNull(message = "Requires a user ID")

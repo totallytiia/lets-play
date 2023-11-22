@@ -1,6 +1,7 @@
 package com.userproductmanagement.letsplay.controller;
 
 import com.userproductmanagement.letsplay.model.User;
+import com.userproductmanagement.letsplay.model.UserResponse;
 import com.userproductmanagement.letsplay.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     // Get a list of all users
-    @GetMapping()
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    @GetMapping
+    public List<UserResponse> getUsers() {
+        return userService.getUsers();
     }
 
     // Get a single user by ID

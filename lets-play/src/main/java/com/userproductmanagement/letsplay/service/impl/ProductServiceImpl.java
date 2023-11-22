@@ -2,13 +2,12 @@ package com.userproductmanagement.letsplay.service.impl;
 
 import com.userproductmanagement.letsplay.exception.EntityNotFoundException;
 import com.userproductmanagement.letsplay.model.Product;
+import com.userproductmanagement.letsplay.model.Role;
 import com.userproductmanagement.letsplay.model.User;
 import com.userproductmanagement.letsplay.repository.ProductRepository;
 import com.userproductmanagement.letsplay.repository.UserRepository;
 import com.userproductmanagement.letsplay.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,9 +30,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProduct(String id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
+    public Optional<Product> getProductById(String id) {
+        return productRepository.findById(id);
+    }
+
+    @Override
+    public Optional<Product> getProductsByUserId(String userId) {
+        return productRepository.findByUserId(userId);
     }
 
     @Override
@@ -61,15 +64,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-    public Boolean updateProduct(String id, Product productDetails) {
-        return productRepository.findById(id)
-                .map(existingProduct -> {
-                    existingProduct.setName(productDetails.getName());
-                    existingProduct.setDescription(productDetails.getDescription());
-                    existingProduct.setPrice(productDetails.getPrice());
-                    productRepository.save(existingProduct);
-                    return true;
-                })
-                .orElse(false);
+    @Override
+    public Boolean updateProduct(String id, Product updatedProduct, UserDetails userDetails) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found for this id :: " + id));
+        User authenticatedUser = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Check if the authenticated user is an admin or the owner of the product
+        if (authenticatedUser.getRole().equals(Role.ROLE_ADMIN) || existingProduct.getUserId().equals(authenticatedUser.getId())) {
+            // Update only the fields that are not null in the updatedProduct
+            if (updatedProduct.getName() != null) {
+                existingProduct.setName(updatedProduct.getName());
+            }
+            if (updatedProduct.getDescription() != null) {
+                existingProduct.setDescription(updatedProduct.getDescription());
+            }
+            if (updatedProduct.getPrice() != null) {
+                existingProduct.setPrice(updatedProduct.getPrice());
+            }
+            productRepository.save(existingProduct);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

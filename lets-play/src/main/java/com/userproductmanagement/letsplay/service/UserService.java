@@ -1,12 +1,13 @@
 package com.userproductmanagement.letsplay.service;
 
 import com.userproductmanagement.letsplay.model.User;
+import com.userproductmanagement.letsplay.model.UserResponse;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    List<User> getUsers();
+    List<UserResponse> getUsers();
 
     User getUser(String id);
 
